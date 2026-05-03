@@ -1,5 +1,36 @@
+version: '3.8'
+
 services:
-  valkey:
-    image: valkey/valkey
+  app:
+    build: .
+    container_name: 1m-checkboxes-app
+    restart: unless-stopped
     ports:
-      - "6379:6379"
+      # Expose on port 3015 to prevent clashes with existing apps on the VPS
+      - "3015:3000"
+    environment:
+      - REDIS_HOST=valkey
+      - REDIS_PORT=6379
+      - PORT=3000
+    depends_on:
+      - valkey
+    networks:
+      - checkbox-network
+
+  valkey:
+    image: valkey/valkey:latest
+    container_name: 1m-checkboxes-valkey
+    restart: unless-stopped
+    # Ports are NOT mapped to the host to avoid conflicting with existing Redis servers on the VPS.
+    # The 'app' container can still communicate with it securely via the Docker network.
+    volumes:
+      - valkey-data:/data
+    networks:
+      - checkbox-network
+
+networks:
+  checkbox-network:
+    driver: bridge
+
+volumes:
+  valkey-data:

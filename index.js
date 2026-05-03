@@ -37,8 +37,8 @@ async function main() {
     if(lastOperationTimeStr){
         const lastOperationTime = parseInt(lastOperationTimeStr, 10);
         const timeElapsed = Date.now() - lastOperationTime;
-        if(timeElapsed < 5000){
-          const remainingTime = 5000 - timeElapsed;
+        if(timeElapsed < 2000){
+          const remainingTime = 2000 - timeElapsed;
           socket.emit("server:error", { message: `Rate limit exceeded. Please try again in ${remainingTime} ms.`, data: data });
             return;
         }
@@ -54,7 +54,7 @@ async function main() {
         remoteData[data.index] = data.checked;
         redis.set(CHECKBOX_STATE_KEY, JSON.stringify(remoteData));
     }else{
-        redis.set(CHECKBOX_STATE_KEY, JSON.stringify(new Array(100).fill(false)));
+        redis.set(CHECKBOX_STATE_KEY, JSON.stringify(new Array(1000000).fill(false)));
     }
    
     await publisher.publish('checkbox-change', JSON.stringify(data));
@@ -70,7 +70,7 @@ async function main() {
     if(existingstate){
       res.json({state: JSON.parse(existingstate)});
     }else{
-      res.json({state: state.checkboxes});
+      res.json({state: new Array(1000000).fill(false)});
     }
   })
 
@@ -79,4 +79,6 @@ async function main() {
   });
 }
 
-main()
+main().catch((err) => {
+  console.error("❌ Server failed to start:", err);
+});
