@@ -6,7 +6,7 @@ const { Pool } = pg;
 const poolConfig = process.env.DATABASE_URL 
   ? { 
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false } // Required by most cloud providers like Render
+      ssl: { rejectUnauthorized: false } 
     }
   : {
       host: process.env.DB_HOST || 'localhost',
@@ -18,18 +18,31 @@ const poolConfig = process.env.DATABASE_URL
 
 const pool = new Pool(poolConfig);
 
+/**
+ * Retries the database connection until it is successful.
+ * This prevents the app from crashing if it starts faster than the Postgres container.
+ */
 export async function initDB() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL
-      );
-    `);
-    console.log("Database initialized successfully.");
-  } catch (err) {
-    console.error("Error initializing DB:", err);
+  let initialized = false;
+  
+  console.log("Connecting to database...");
+
+  while (!initialized) {
+    try {
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          username VARCHAR(50) UNIQUE NOT NULL,
+          password_hash VARCHAR(255) NOT NULL
+        );
+      `);
+      console.log("✅ Database connected and initialized.");
+      initialized = true;
+    } catch (err) {
+      console.error("⏳ Database not ready yet, retrying in 2 seconds...");
+      // Wait for 2 seconds before retrying
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
   }
 }
 
