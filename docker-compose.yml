@@ -6,14 +6,19 @@ services:
     container_name: 1m-checkboxes-app
     restart: unless-stopped
     ports:
-      # Expose on port 3015 to prevent clashes with existing apps on the VPS
       - "3015:3000"
     environment:
       - REDIS_HOST=valkey
       - REDIS_PORT=6379
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=secret
+      - DB_NAME=checkboxes
+      - JWT_SECRET=supersecret123
       - PORT=3000
     depends_on:
       - valkey
+      - db
     networks:
       - checkbox-network
 
@@ -21,10 +26,23 @@ services:
     image: valkey/valkey:latest
     container_name: 1m-checkboxes-valkey
     restart: unless-stopped
-    # Ports are NOT mapped to the host to avoid conflicting with existing Redis servers on the VPS.
-    # The 'app' container can still communicate with it securely via the Docker network.
     volumes:
       - valkey-data:/data
+    networks:
+      - checkbox-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: 1m-checkboxes-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=checkboxes
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
     networks:
       - checkbox-network
 
@@ -34,3 +52,4 @@ networks:
 
 volumes:
   valkey-data:
+  pg-data:

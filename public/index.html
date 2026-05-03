@@ -12,14 +12,40 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="main-container">
-        <div class="cluster-wrapper">
-            <div class="cluster-header">
-                <h1 style="font-size: 50px; font-weight: 300;">Million Checkboxes</h1>
-            </div>
-            <div id="checkbox-container"></div>
+    <div class="auth-bar" id="auth-bar">
+        <div id="logged-out-view">
+            <input type="text" id="username" placeholder="Username" autocomplete="off">
+            <input type="password" id="password" placeholder="Password">
+            <button id="login-btn">Login</button>
+            <button id="register-btn">Register</button>
         </div>
-    </main>
+        <div id="logged-in-view" style="display: none;">
+            <span class="welcome-text">Logged in as <strong id="current-user"></strong></span>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <div class="page-layout">
+        <aside class="live-feed">
+            <div class="feed-header">
+                <h3>Live Activity</h3>
+            </div>
+            <ul id="feed-list" class="feed-list">
+                <li class="feed-placeholder">Waiting for activity...</li>
+            </ul>
+        </aside>
+
+        <main class="main-container">
+            <div class="cluster-wrapper">
+                <div class="cluster-header">
+                    <h1>Million Checkboxes</h1>
+                </div>
+                <div id="checkbox-container"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="custom-tooltip" class="custom-tooltip"></div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
