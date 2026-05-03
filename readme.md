@@ -1,7 +1,13 @@
+
+
+
+
 # One Million Checkboxes
 
 ## Project Overview
 One Million Checkboxes is a real-time, interactive web application featuring one million checkboxes that users can toggle. The state of all the checkboxes is synchronized almost instantly across all connected clients. Users can register and log in to interact with the checkboxes, and a live feed history displays the most recent activities (users joining, registering, and checking/unchecking boxes).
+
+https://github.com/user-attachments/assets/ccf99dd8-31ac-464a-b886-96332a89527e
 
 ## Tech Stack
 - **Backend:** Node.js, Express.js
@@ -90,4 +96,8 @@ To prevent an individual user from spamming or overloading the application, rate
 4. If the request is permitted, the server writes the current timestamp back to Redis with a TTL of 5 seconds to ensure clean up over time.
 
 ## Screenshots / Demo
-[![One Million Checkboxes Demo](https://img.youtube.com/vi/CK1CFZEwqJw/0.jpg)](https://youtu.be/CK1CFZEwqJw)
+<img width="1897" height="928" alt="image" src="https://github.com/user-attachments/assets/3f414f70-a4ff-41a3-8943-8abe9896d4af" />
+<img width="1315" height="837" alt="image" src="https://github.com/user-attachments/assets/443d33eb-8c6b-42ba-8374-5a2f75ab8af5" />
+<img width="551" height="928" alt="image" src="https://github.com/user-attachments/assets/e94ddd11-1546-42d4-b795-ea2f166427b3" />
+
+
